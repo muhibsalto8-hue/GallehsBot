@@ -23,9 +23,8 @@ export async function run(sock, m, args) {
         )
 
         await sock.sendMessage(jid, {
-            image: buffer,
-            caption: "✨ Brat berhasil dibuat!"
-        })
+    sticker: buffer
+})
 
     } catch (e) {
         console.log(e)
