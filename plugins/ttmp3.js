@@ -49,3 +49,4 @@ export async function run(sock, m, args) {
         text: `❌ Error:\n${e.message}`
     })
     }
+}
