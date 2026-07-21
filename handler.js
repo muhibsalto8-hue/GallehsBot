@@ -1,51 +1,37 @@
-import config from "./config.js"
+import fs from "fs"
+import path from "path"
+
+const plugins = {}
+
+const pluginFolder = "./plugins"
+
+for (const file of fs.readdirSync(pluginFolder)) {
+    if (!file.endsWith(".js")) continue
+    const plugin = await import(path.resolve(pluginFolder, file))
+    plugins[plugin.default.command] = plugin.default
+}
 
 export async function handler(sock, m) {
-  try {
-    if (!m.messages) return
+    try {
+        if (!m.messages) return
 
-    const msg = m.messages[0]
-    if (!msg.message) return
+        const msg = m.messages[0]
+        if (!msg.message) return
 
-    const from = msg.key.remoteJid
+        const body =
+            msg.message.conversation ||
+            msg.message.extendedTextMessage?.text ||
+            ""
 
-    const body =
-      msg.message.conversation ||
-      msg.message.extendedTextMessage?.text ||
-      ""
+        if (!body.startsWith(".")) return
 
-    if (!body.startsWith(config.prefix)) return
+        const command = body.slice(1).split(" ")[0].toLowerCase()
 
-    const args = body.slice(config.prefix.length).trim().split(/ +/)
-    const command = args.shift().toLowerCase()
+        if (plugins[command]) {
+            await plugins[command].run(sock, msg)
+        }
 
-    switch (command) {
-
-      case "ping":
-        await sock.sendMessage(from, {
-          text: "🏓 Pong!"
-        })
-        break
-
-      case "menu":
-        await sock.sendMessage(from, {
-          text:
-`🤖 ${config.botName}
-
-👤 Owner : ${config.ownerName}
-
-📋 MENU
-
-• .menu
-• .ping
-
-GallehsBot v1.0`
-        })
-        break
-
+    } catch (e) {
+        console.log(e)
     }
-
-  } catch (err) {
-    console.log(err)
-  }
 }
