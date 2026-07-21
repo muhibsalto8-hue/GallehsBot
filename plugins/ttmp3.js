@@ -3,8 +3,8 @@ export const command = ["ttmp3"]
 export async function run(sock, m, args) {
     const jid = m.key.remoteJid
 
-    if (!args[0]) {
-        return await sock.sendMessage(jid, {
+    if (!args.length) {
+        return sock.sendMessage(jid, {
             text: "❌ Contoh:\n.ttmp3 https://vt.tiktok.com/xxxx"
         })
     }
@@ -12,8 +12,20 @@ export async function run(sock, m, args) {
     const url = args[0]
 
     await sock.sendMessage(jid, {
-        text: "⏳ Sedang mengambil audio TikTok..."
+        text: "⏳ Mengambil audio TikTok..."
     })
 
-    // API downloader dipanggil di sini
+    try {
+
+        // TODO: Ambil audio dari API
+
+        await sock.sendMessage(jid, {
+            text: "Plugin belum dihubungkan ke API downloader."
+        })
+
+    } catch (e) {
+        await sock.sendMessage(jid, {
+            text: "❌ Gagal mengambil audio."
+        })
+    }
 }
