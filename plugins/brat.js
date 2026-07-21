@@ -1,36 +1,59 @@
+import fs from "fs"
+import path from "path"
+import ffmpeg from "fluent-ffmpeg"
+
 export const command = ["brat"]
 
 export async function run(sock, m, args) {
-    const jid = m.key.remoteJid
+  const jid = m.key.remoteJid
 
-    if (!args.length) {
-        return sock.sendMessage(jid, {
-            text: "❌ Contoh:\n.brat GallehsBot"
-        })
-    }
+  if (!args.length) {
+    return sock.sendMessage(jid, {
+      text: "❌ Contoh:\n.brat Halo Dunia"
+    })
+  }
 
-    try {
-        const text = args.join(" ")
+  try {
+    await sock.sendMessage(jid, {
+      text: "🎨 Membuat Brat..."
+    })
 
-        await sock.sendMessage(jid, {
-            text: "🎨 Membuat Brat..."
-        })
+    const text = encodeURIComponent(args.join(" "))
+    const url = `https://api.erhabot.com/api/maker/brat?text=${text}`
 
-        const url = `https://api.erhabot.com/api/maker/brat?text=${encodeURIComponent(text)}`
+    const res = await fetch(url)
+    const buffer = Buffer.from(await res.arrayBuffer())
 
-        const buffer = Buffer.from(
-            await (await fetch(url)).arrayBuffer()
-        )
+    if (!fs.existsSync("./tmp")) fs.mkdirSync("./tmp")
 
-        await sock.sendMessage(jid, {
-    sticker: buffer
-})
+    const input = "./tmp/brat.png"
+    const output = "./tmp/brat.webp"
 
-    } catch (e) {
-        console.log(e)
+    fs.writeFileSync(input, buffer)
 
-        await sock.sendMessage(jid, {
-            text: `❌ Error:\n${e.message}`
-        })
-    }
+    await new Promise((resolve, reject) => {
+      ffmpeg(input)
+        .outputOptions([
+          "-vcodec", "libwebp",
+          "-vf", "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:-1:-1:color=white@0.0"
+        ])
+        .toFormat("webp")
+        .save(output)
+        .on("end", resolve)
+        .on("error", reject)
+    })
+
+    await sock.sendMessage(jid, {
+      sticker: fs.readFileSync(output)
+    })
+
+    fs.unlinkSync(input)
+    fs.unlinkSync(output)
+
+  } catch (e) {
+    console.log(e)
+    await sock.sendMessage(jid, {
+      text: "❌ " + e.message
+    })
+  }
 }
