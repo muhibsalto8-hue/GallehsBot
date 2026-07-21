@@ -1,7 +1,9 @@
-export const command = ["ping"]
+export default {
+    command: "ping",
 
-export async function run(sock, m) {
-    await sock.sendMessage(m.chat, {
-        text: "🏓 Pong!\nBot berjalan dengan normal."
-    })
+    async run(sock, msg) {
+        await sock.sendMessage(msg.key.remoteJid, {
+            text: "🏓 Pong!"
+        })
+    }
 }
