@@ -1,46 +1,76 @@
 import fs from "fs"
 import config from "../config.js"
 
-export const command = ["menu"]
+export default {
+  command: ["menu"],
+  category: "main",
 
-export async function run(sock, m) {
-    const jid = m.key.remoteJid
+  async execute(sock, m) {
 
-    const menu = `🤖 *${config.botName}*
+    const menu = `
+╭━━━〔 🤖 GallehsBot 〕━━━⬣
+┃ 👑 Owner : ${config.ownerName}
+┃ ⚡ Prefix : ${config.prefix}
+╰━━━━━━━━━━━━━━━━⬣
 
-👑 Owner : ${config.ownerName}
-🪄 Prefix : ${config.prefix}
+┏━━━━━━━━━━━━━━━━━━┓
+┃ 📖 MAIN
+┣━━━━━━━━━━━━━━━━━━┫
+┃ ❏ .menu
+┃ ❏ .ping
+┗━━━━━━━━━━━━━━━━━━┛
 
-📋 *MAIN*
-• .menu
-• .ping
+┏━━━━━━━━━━━━━━━━━━┓
+┃ 🤖 AI
+┣━━━━━━━━━━━━━━━━━━┫
+┃ ❏ .ai
+┗━━━━━━━━━━━━━━━━━━┛
 
-🤖 *AI*
-• .ai
+┏━━━━━━━━━━━━━━━━━━┓
+┃ 🎨 TOOLS
+┣━━━━━━━━━━━━━━━━━━┫
+┃ ❏ .brat
+┃ ❏ .sticker
+┗━━━━━━━━━━━━━━━━━━┛
 
-🎨 *TOOLS*
-• .brat
-• .sticker
+┏━━━━━━━━━━━━━━━━━━┓
+┃ ⬇️ DOWNLOADER
+┣━━━━━━━━━━━━━━━━━━┫
+┃ ❏ .tiktok
+┃ ❏ .instagram
+┗━━━━━━━━━━━━━━━━━━┛
 
-⬇️ *DOWNLOADER*
-• .tiktok
-• .instagram
+┏━━━━━━━━━━━━━━━━━━┓
+┃ 👥 GROUP
+┣━━━━━━━━━━━━━━━━━━┫
+┃ ❏ .tagall
+┃ ❏ .hidetag
+┗━━━━━━━━━━━━━━━━━━┛
 
-👥 *GROUP*
-• .tagall
-• .hidetag`
+╭━━━━━━━━━━━━━━━━━━╮
+┃ 🤖 Powered By Gallehs
+╰━━━━━━━━━━━━━━━━━━╯
+`
 
-    // Kirim gambar + caption (SATU PESAN)
-    await sock.sendMessage(jid, {
+    // Bubble 1 (Foto + Caption)
+    await sock.sendMessage(
+      m.chat,
+      {
         image: fs.readFileSync("./assets/menu.jpg"),
         caption: menu
-    }, {
-        quoted: m
-    })
+      },
+      { quoted: m }
+    )
 
-    // Kirim audio (PESAN KEDUA)
-    await sock.sendMessage(jid, {
+    // Bubble 2 (Audio)
+    await sock.sendMessage(
+      m.chat,
+      {
         audio: fs.readFileSync("./assets/menu.mp3"),
         mimetype: "audio/mpeg",
         ptt: false
-    }, {
+      },
+      { quoted: m }
+    )
+  }
+}
