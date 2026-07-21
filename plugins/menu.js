@@ -49,7 +49,6 @@ ${greet}
 ╰────────────────
 
 ╭──〔 🛠 TOOLS 〕
-│ 🖼️ .sticker
 │ 🎨 .brat
 │ 📷 .tourl
 │ 🖼️ .toimg
