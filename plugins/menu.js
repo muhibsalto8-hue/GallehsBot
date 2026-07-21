@@ -34,13 +34,11 @@ ${greet}
 ╰──────────────
 
 ╭──〔 ⬇️ DOWNLOADER 〕
-│ 🎵 .ytmp3
+│ 🎵 .play
+│ 🎧 .ytmp3
 │ 🎥 .ytmp4
-│ ▶️ .play
-│ 🎬 .tiktok
 │ 🎶 .ttmp3
 │ 📹 .ttmp4
-│ 📸 .instagram
 ╰──────────────
 
 ╭──〔 🛠 TOOLS 〕
