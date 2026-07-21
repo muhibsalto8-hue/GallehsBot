@@ -13,6 +13,7 @@ export async function run(sock, m) {
     else if (hour >= 11 && hour < 15) greet = "☀️ Selamat Siang"
     else if (hour >= 15 && hour < 18) greet = "🌇 Selamat Sore"
 
+
     const menu = `
 ╭━━━━━━━━━━━━━━━━━━━━━━━━━━╮
 ┃        🤖 *${config.botName}*
@@ -20,45 +21,56 @@ export async function run(sock, m) {
 
 ${greet}
 
-👤 *User* : @${jid.split("@")[0]}
-👑 *Owner* : ${config.ownerName}
+👤 *User*   : @${jid.split("@")[0]}
+👑 *Owner*  : ${config.ownerName}
 ⚡ *Prefix* : ${config.prefix}
 
-╭──〔 ⚡ MAIN MENU 〕
-│ ✦ .menu
-│ ✦ .ping
-╰──────────────
-
-╭──〔 🤖 AI MENU 〕
-│ ✦ .ai
-╰──────────────
-
-╭──〔 ⬇️ DOWNLOADER 〕
-│ 🎵 .play
-│ 🎧 .ytmp3
-│ 🎥 .ytmp4
+╭──〔 📥 DOWNLOADER 〕
 │ 🎶 .ttmp3
 │ 📹 .ttmp4
-╰──────────────
+╰────────────────
+
+╭──〔 😂 FUN MENU 〕
+│ 🎲 .tebakgambar
+│ 🧠 .tebakkata
+│ 🎵 .tebaklagu
+│ 🐦 .tebakhewan
+│ 🚩 .tebakbendera
+│ 🌍 .tebaknegara
+│ 🎮 .susunkata
+│ 🤔 .caklontong
+│ ❓ .siapakahaku
+│ 🎯 .truth
+│ 😈 .dare
+╰────────────────
+
+╭──〔 🤖 AI MENU 〕
+│ 💬 .ai
+╰────────────────
 
 ╭──〔 🛠 TOOLS 〕
-│ 🖼️ .brat
 │ 🖼️ .sticker
-╰──────────────
+│ 🎨 .brat
+│ 📷 .tourl
+│ 🖼️ .toimg
+╰────────────────
 
 ╭──〔 👥 GROUP 〕
-│ 👥 .tagall
-│ 📢 .hidetag
-╰──────────────
+│ 📢 .tagall
+│ 👻 .hidetag
+│ 🔗 .antilink
+│ 👋 .welcome
+╰────────────────
 
 ╭──〔 👑 OWNER 〕
-│ ⚙️ .self
+│ 🔒 .self
 │ 🌐 .public
 │ 🔄 .restart
-╰──────────────
+│ ⛔ .shutdown
+╰────────────────
 
 ━━━━━━━━━━━━━━━━━━━━━━
-✨ *Thanks For Using*
+💚 Thanks For Using
 🤖 ${config.botName}
 ━━━━━━━━━━━━━━━━━━━━━━
 `
