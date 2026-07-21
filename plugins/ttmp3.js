@@ -20,14 +20,16 @@ export async function run(sock, m, args) {
             text: "⏳ Mengambil audio TikTok..."
         })
 
-        const api = `https://api.azbry.com/api/downloader/tiktok?url=${encodeURIComponent(args[0])}`
+        const api = `https://api.azbry.com/api/download/tiktok?url=${encodeURIComponent(args[0])}`
 
         const res = await fetch(api)
         const json = await res.json()
 
+        console.log(json)
+
         if (!json.status) throw new Error("Downloader gagal.")
 
-        const audio = json.result.music
+        const audio = json.result.music.url
 
         const buffer = Buffer.from(
             await (await fetch(audio)).arrayBuffer()
@@ -39,10 +41,11 @@ export async function run(sock, m, args) {
             ptt: false
         })
 
-    } catch (e) {
-        console.log(e)
-        sock.sendMessage(jid, {
-            text: "❌ Gagal mengambil audio."
-        })
+
+        } catch (e) {
+    console.log(e)
+
+    await sock.sendMessage(jid, {
+        text: `❌ Error:\n${e.message}`
+    })
     }
-}
