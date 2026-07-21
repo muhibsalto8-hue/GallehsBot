@@ -6,80 +6,83 @@ export const command = ["menu"]
 export async function run(sock, m) {
     const jid = m.key.remoteJid
 
-    const user =
-        m.pushName ||
-        m.message?.extendedTextMessage?.contextInfo?.participant?.split("@")[0] ||
-        "User"
+    const hour = new Date().getHours()
+    let greet = "🌙 Selamat Malam"
 
-    const now = new Date()
-
-    const tanggal = now.toLocaleDateString("id-ID", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-    })
-
-    const jam = now.toLocaleTimeString("id-ID")
+    if (hour >= 4 && hour < 11) greet = "🌅 Selamat Pagi"
+    else if (hour >= 11 && hour < 15) greet = "☀️ Selamat Siang"
+    else if (hour >= 15 && hour < 18) greet = "🌇 Selamat Sore"
 
     const menu = `
-╭━━━━━━━━━━━━━━━━━━━━━━━╮
-┃      🤖 *${config.botName}*
-┣━━━━━━━━━━━━━━━━━━━━━━━┫
-┃ 👤 User   : ${user}
-┃ 👑 Owner  : ${config.ownerName}
-┃ ⚡ Prefix : ${config.prefix}
-┃ 📅 ${tanggal}
-┃ 🕒 ${jam}
-╰━━━━━━━━━━━━━━━━━━━━━━━╯
+╭━━━━━━━━━━━━━━━━━━━━━━━━━━╮
+┃        🤖 *${config.botName}*
+╰━━━━━━━━━━━━━━━━━━━━━━━━━━╯
 
-╭─❍ *MAIN MENU*
-│ • .menu
-│ • .ping
-│ • .owner
+${greet}
+
+👤 *User* : @${jid.split("@")[0]}
+👑 *Owner* : ${config.ownerName}
+⚡ *Prefix* : ${config.prefix}
+
+╭──〔 ⚡ MAIN MENU 〕
+│ ✦ .menu
+│ ✦ .ping
 ╰──────────────
 
-╭─❍ *AI MENU*
-│ • .ai
+╭──〔 🤖 AI MENU 〕
+│ ✦ .ai
 ╰──────────────
 
-╭─❍ *TOOLS*
-│ • .sticker
-│ • .brat
+╭──〔 ⬇️ DOWNLOADER 〕
+│ 🎵 .ytmp3
+│ 🎥 .ytmp4
+│ ▶️ .play
+│ 🎬 .tiktok
+│ 🎶 .ttmp3
+│ 📹 .ttmp4
+│ 📸 .instagram
 ╰──────────────
 
-╭─❍ *DOWNLOADER*
-│ • .tiktok
-│ • .instagram
+╭──〔 🛠 TOOLS 〕
+│ 🖼️ .brat
+│ 🖼️ .sticker
 ╰──────────────
 
-╭─❍ *GROUP*
-│ • .tagall
-│ • .hidetag
+╭──〔 👥 GROUP 〕
+│ 👥 .tagall
+│ 📢 .hidetag
 ╰──────────────
 
-━━━━━━━━━━━━━━━━━━━━━━━
-© ${config.botName}
-`.trim()
+╭──〔 👑 OWNER 〕
+│ ⚙️ .self
+│ 🌐 .public
+│ 🔄 .restart
+╰──────────────
 
-    // FOTO + MENU (SATU CHAT)
-    await sock.sendMessage(
-        jid,
-        {
-            image: fs.readFileSync("./assets/menu.jpg"),
-            caption: menu
-        },
-        { quoted: m }
-    )
+━━━━━━━━━━━━━━━━━━━━━━
+✨ *Thanks For Using*
+🤖 ${config.botName}
+━━━━━━━━━━━━━━━━━━━━━━
+`
 
-    // AUDIO (CHAT KEDUA)
-    await sock.sendMessage(
-        jid,
-        {
-            audio: fs.readFileSync("./assets/menu.mp3"),
+    if (fs.existsSync(config.menu.image)) {
+        await sock.sendMessage(jid, {
+            image: fs.readFileSync(config.menu.image),
+            caption: menu,
+            mentions: [jid]
+        })
+    } else {
+        await sock.sendMessage(jid, {
+            text: menu,
+            mentions: [jid]
+        })
+    }
+
+    if (config.menu.audioEnable && fs.existsSync(config.menu.audio)) {
+        await sock.sendMessage(jid, {
+            audio: fs.readFileSync(config.menu.audio),
             mimetype: "audio/mpeg",
             ptt: false
-        },
-        { quoted: m }
-    )
+        })
+    }
 }
