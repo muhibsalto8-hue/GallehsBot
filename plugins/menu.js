@@ -1,18 +1,31 @@
+import config from "../config.js"
+
 export const command = ["menu"]
 
-export async function run(sock, m, config) {
-  const from = m.key.remoteJid
+export async function run(sock, m) {
+    await sock.sendMessage(m.chat, {
+        text: `╭━━━〔 🤖 ${config.botName} 〕━━━╮
+┃ 👑 Owner : ${config.ownerName}
+┃ 🔖 Prefix : ${config.prefix}
+╰━━━━━━━━━━━━━━━━━━╯
 
-  await sock.sendMessage(from, {
-    text: `🤖 *${config.botName}*
-
-👤 Owner : ${config.ownerName}
-
-📋 MENU
-
+📋 MAIN
 • .menu
 • .ping
 
-Version : 1.0.0`
-  })
+🤖 AI
+• .ai
+
+🎨 TOOLS
+• .brat
+• .sticker
+
+⬇️ DOWNLOADER
+• .tiktok
+• .instagram
+
+👥 GROUP
+• .tagall
+• .hidetag`
+    })
 }
