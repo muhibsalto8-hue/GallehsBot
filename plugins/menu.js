@@ -1,37 +1,15 @@
-import config from "../config.js"
 import fs from "fs"
+import config from "../config.js"
 
 export const command = ["menu"]
 
 export async function run(sock, m) {
     const jid = m.key.remoteJid
 
-    // Kirim gambar menu
-    if (fs.existsSync("./assets/menu.jpg")) {
-        await sock.sendMessage(jid, {
-            image: fs.readFileSync("./assets/menu.jpg"),
-            caption: `🤖 *${config.botName}*
+    const menu = `🤖 *${config.botName}*
 
 👑 Owner : ${config.ownerName}
-🔖 Prefix : ${config.prefix}`
-        })
-    }
-
-    // Kirim audio menu
-    if (fs.existsSync("./assets/menu.mp3")) {
-        await sock.sendMessage(jid, {
-            audio: fs.readFileSync("./assets/menu.mp3"),
-            mimetype: "audio/mpeg",
-            ptt: false
-        })
-    }
-
-    // Kirim teks menu
-    await sock.sendMessage(jid, {
-        text: `╭━━━〔 🤖 ${config.botName} 〕━━━╮
-┃ 👑 Owner : ${config.ownerName}
-┃ 🔖 Prefix : ${config.prefix}
-╰━━━━━━━━━━━━━━━━━━╯
+🪄 Prefix : ${config.prefix}
 
 📋 *MAIN*
 • .menu
@@ -51,5 +29,18 @@ export async function run(sock, m) {
 👥 *GROUP*
 • .tagall
 • .hidetag`
+
+    // Kirim gambar + caption (SATU PESAN)
+    await sock.sendMessage(jid, {
+        image: fs.readFileSync("./assets/menu.jpg"),
+        caption: menu
+    }, {
+        quoted: m
     })
-}
+
+    // Kirim audio (PESAN KEDUA)
+    await sock.sendMessage(jid, {
+        audio: fs.readFileSync("./assets/menu.mp3"),
+        mimetype: "audio/mpeg",
+        ptt: false
+    }, {
