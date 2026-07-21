@@ -1,15 +1,6 @@
-import fs from "fs"
-import path from "path"
+import { loadPlugins } from "./lib/plugins.js"
 
-const plugins = {}
-
-const pluginFolder = "./plugins"
-
-for (const file of fs.readdirSync(pluginFolder)) {
-    if (!file.endsWith(".js")) continue
-    const plugin = await import(path.resolve(pluginFolder, file))
-    plugins[plugin.default.command] = plugin.default
-}
+let plugins = await loadPlugins()
 
 export async function handler(sock, m) {
     try {
@@ -25,11 +16,13 @@ export async function handler(sock, m) {
 
         if (!body.startsWith(".")) return
 
-        const command = body.slice(1).split(" ")[0].toLowerCase()
+        const args = body.slice(1).trim().split(/ +/)
+        const command = args.shift().toLowerCase()
 
-        if (plugins[command]) {
-            await plugins[command].run(sock, msg)
-        }
+        const plugin = plugins.get(command)
+        if (!plugin) return
+
+        await plugin.run(sock, msg, args)
 
     } catch (e) {
         console.log(e)
