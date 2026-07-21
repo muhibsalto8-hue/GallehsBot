@@ -5,26 +5,43 @@ export async function run(sock, m, args) {
 
     if (!args.length) {
         return sock.sendMessage(jid, {
-            text: "❌ Contoh:\n.ttmp3 https://vt.tiktok.com/xxxx"
+            text: "❌ Contoh:\n.ttmp3 https://vt.tiktok.com/xxxxx"
         })
     }
 
-    const url = args[0]
-
-    await sock.sendMessage(jid, {
-        text: "⏳ Mengambil audio TikTok..."
-    })
+    if (!args[0].includes("tiktok.com")) {
+        return sock.sendMessage(jid, {
+            text: "❌ Link TikTok tidak valid."
+        })
+    }
 
     try {
+        await sock.sendMessage(jid, {
+            text: "⏳ Mengambil audio TikTok..."
+        })
 
-        // TODO: Ambil audio dari API
+        const api = `https://api.azbry.com/api/downloader/tiktok?url=${encodeURIComponent(args[0])}`
+
+        const res = await fetch(api)
+        const json = await res.json()
+
+        if (!json.status) throw new Error("Downloader gagal.")
+
+        const audio = json.result.music
+
+        const buffer = Buffer.from(
+            await (await fetch(audio)).arrayBuffer()
+        )
 
         await sock.sendMessage(jid, {
-            text: "Plugin belum dihubungkan ke API downloader."
+            audio: buffer,
+            mimetype: "audio/mpeg",
+            ptt: false
         })
 
     } catch (e) {
-        await sock.sendMessage(jid, {
+        console.log(e)
+        sock.sendMessage(jid, {
             text: "❌ Gagal mengambil audio."
         })
     }
