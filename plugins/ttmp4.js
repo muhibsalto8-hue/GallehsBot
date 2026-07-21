@@ -5,7 +5,7 @@ export async function run(sock, m, args) {
 
     if (!args.length) {
         return sock.sendMessage(jid, {
-            text: "❌ Contoh:\n.ttmp4 https://vt.tiktok.com/xxxxx"
+            text: "❌ Contoh:\n.ttmp4 https://vt.tiktok.com/xxxxx/"
         })
     }
 
@@ -20,14 +20,16 @@ export async function run(sock, m, args) {
             text: "⏳ Mengambil video TikTok..."
         })
 
-        const api = `https://api.azbry.com/api/downloader/tiktok?url=${encodeURIComponent(args[0])}`
+        const api = `https://api.azbry.com/api/download/tiktok?url=${encodeURIComponent(args[0])}`
 
         const res = await fetch(api)
         const json = await res.json()
 
+        console.log(json)
+
         if (!json.status) throw new Error("Downloader gagal.")
 
-        const video = json.result.play[0]
+        const video = json.result.url
 
         const buffer = Buffer.from(
             await (await fetch(video)).arrayBuffer()
@@ -36,17 +38,14 @@ export async function run(sock, m, args) {
         await sock.sendMessage(jid, {
             video: buffer,
             mimetype: "video/mp4",
-            caption:
-`🎬 *${json.result.title}*
-
-👤 ${json.result.author}
-🤖 ${json.creator || "GallehsBot"}`
+            caption: `🎬 ${json.result.title || "TikTok Video"}`
         })
 
     } catch (e) {
         console.log(e)
-        sock.sendMessage(jid, {
-            text: "❌ Gagal mengambil video."
+
+        await sock.sendMessage(jid, {
+            text: `❌ Error:\n${e.message}`
         })
     }
 }
